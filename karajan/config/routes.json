@@ -1,0 +1,58 @@
+{
+  "models": {
+    "cheap": "claude-haiku-4-5-20251001",
+    "balanced": "claude-sonnet-5",
+    "powerful": "claude-opus-5"
+  },
+  "token_weights": {
+    "cheap": 1,
+    "balanced": 5,
+    "powerful": 10
+  },
+  "classification_rules": {
+    "cheap_keywords": [
+      "explica",
+      "resumo",
+      "simples",
+      "rápido",
+      "formato",
+      "lint",
+      "typo",
+      "traduz",
+      "pergunta"
+    ],
+    "balanced_keywords": [
+      "bug",
+      "debug",
+      "teste",
+      "test",
+      "feature",
+      "implementa",
+      "refator",
+      "simplifica",
+      "review"
+    ],
+    "powerful_keywords": [
+      "arquitetura",
+      "design",
+      "segurança",
+      "performance",
+      "otimiza",
+      "strategy",
+      "estratégia",
+      "migraçao",
+      "ultrareview"
+    ]
+  },
+  "context_thresholds": {
+    "cheap_max_files": 3,
+    "cheap_max_lines": 200,
+    "balanced_max_files": 10,
+    "balanced_max_lines": 2000
+  },
+  "fallback_strategy": {
+    "retry_on_fail": true,
+    "escalate_cheap_to": "balanced",
+    "escalate_balanced_to": "powerful"
+  }
+}

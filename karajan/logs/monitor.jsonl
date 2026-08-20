@@ -1,0 +1,3 @@
+{"timestamp": "2026-08-19T14:23:22.356128", "date": "2026-08-19", "prompt_preview": "Explica esse código de autenticação", "level": "cheap", "model": "Haiku 4.5", "execution_time": 0.5, "token_weight": 1, "tokens_estimated": 256}
+{"timestamp": "2026-08-19T14:23:22.407510", "date": "2026-08-19", "prompt_preview": "Debug: por que essa função retorna null", "level": "balanced", "model": "Sonnet 5", "execution_time": 1.2, "token_weight": 5, "tokens_estimated": 512}
+{"timestamp": "2026-08-19T14:23:22.448353", "date": "2026-08-19", "prompt_preview": "Redesenha arquitetura de segurança", "level": "powerful", "model": "Opus 5", "execution_time": 2.1, "token_weight": 10, "tokens_estimated": 1024}

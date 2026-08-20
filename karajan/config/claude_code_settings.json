@@ -1,0 +1,70 @@
+{
+  "comment": "Adicionar isto ao ~/.claude/settings.json para ativar Karajan automático",
+
+  "karajan": {
+    "enabled": true,
+    "version": "phase-1-with-rtk",
+    "description": "Roteamento automático de modelos + economia RTK"
+  },
+
+  "hooks": {
+    "before:submit": {
+      "command": "bash /Users/thiago.dias/Claude_CLI/karajan/hooks/claude_code_hook.sh",
+      "description": "Classifica tarefa com Karajan, seleciona modelo automaticamente",
+      "timeout_ms": 5000,
+      "fail_mode": "continue",
+      "log_output": true
+    }
+  },
+
+  "model_selection": {
+    "strategy": "karajan_auto",
+    "fallback": "claude-sonnet-5",
+    "prefer_cheap_for_simple": true,
+    "aggressive_economy": true
+  },
+
+  "rtk": {
+    "enabled": true,
+    "commands": [
+      "git",
+      "ls",
+      "find",
+      "grep",
+      "cat",
+      "head",
+      "tail"
+    ],
+    "description": "RTK comprime automaticamente comandos CLI (60-90% economia)"
+  },
+
+  "compression": {
+    "strategies": {
+      "cheap": {
+        "aggressive": true,
+        "remove_comments": true,
+        "remove_whitespace": true,
+        "max_context_chars": 2000
+      },
+      "balanced": {
+        "aggressive": false,
+        "remove_comments": false,
+        "remove_whitespace": true,
+        "max_context_chars": 10000
+      },
+      "powerful": {
+        "aggressive": false,
+        "remove_comments": false,
+        "remove_whitespace": false,
+        "max_context_chars": 100000
+      }
+    }
+  },
+
+  "logging": {
+    "karajan_decisions": "~/.claude_karajan_decisions.log",
+    "track_model_usage": true,
+    "track_token_savings": true,
+    "report_frequency": "daily"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "enabled": true,
+  "version": "1.0",
+  "description": "Política Robusta de Economia de Tokens com Múltiplas Técnicas",
+
+  "strategies": {
+    "cheap": {
+      "compression": "aggressive",
+      "context_limit": 2000,
+      "summarize_old_context": true,
+      "use_prompt_caching": true,
+      "remove_comments": true,
+      "remove_whitespace": true,
+      "truncate_long_outputs": true,
+      "token_reduction_target": "50-70%"
+    },
+    "balanced": {
+      "compression": "moderate",
+      "context_limit": 10000,
+      "summarize_old_context": true,
+      "use_prompt_caching": true,
+      "remove_comments": false,
+      "remove_whitespace": true,
+      "truncate_long_outputs": false,
+      "token_reduction_target": "20-35%"
+    },
+    "powerful": {
+      "compression": "minimal",
+      "context_limit": 100000,
+      "summarize_old_context": false,
+      "use_prompt_caching": true,
+      "remove_comments": false,
+      "remove_whitespace": false,
+      "truncate_long_outputs": false,
+      "token_reduction_target": "0-10%"
+    }
+  },
+
+  "techniques": {
+    "prompt_caching": {
+      "enabled": true,
+      "description": "Reutiliza tokens de prompts frequentes (cache nativo Claude)",
+      "implementation": "Claude API caches automaticamente prompts repetidos",
+      "savings_potential": "10-20% em tarefas repetidas"
+    },
+    "context_compression": {
+      "enabled": true,
+      "description": "Remove comentários, whitespace, código não-essencial",
+      "implementation": "Strip comments, normalize whitespace, remove dead code",
+      "savings_potential": "15-25% do contexto"
+    },
+    "context_summarization": {
+      "enabled": true,
+      "description": "Resume contexto antigo em 1-2 linhas antes de nova tarefa",
+      "implementation": "Mantém histórico comprimido de tarefas anteriores",
+      "savings_potential": "20-30% em conversas longas"
+    },
+    "selective_context": {
+      "enabled": true,
+      "description": "Inclui apenas arquivos/funções relevantes, não toda repo",
+      "implementation": "Análise de dependência para seleção inteligente",
+      "savings_potential": "30-50% em projetos grandes"
+    },
+    "rtk_integration": {
+      "enabled": true,
+      "description": "Usa RTK (Rust Token Killer) para compressão adicional",
+      "implementation": "Pipe comandos através de RTK para token savings automáticos",
+      "savings_potential": "60-90% em operações CLI"
+    },
+    "incremental_prompting": {
+      "enabled": true,
+      "description": "Divide tarefas complexas em steps incrementais",
+      "implementation": "Prompt de 10k tokens → 5x prompts de 2k tokens",
+      "savings_potential": "Depende da tarefa, 20-40% média"
+    },
+    "response_caching": {
+      "enabled": true,
+      "description": "Cache local de respostas comuns para reuso",
+      "implementation": "SQLite local armazenando (prompt_hash → response)",
+      "savings_potential": "90%+ em perguntas duplicadas"
+    }
+  },
+
+  "rtk_commands": {
+    "git": "rtk git",
+    "ls": "rtk ls",
+    "find": "rtk find",
+    "grep": "rtk grep",
+    "custom": "rtk proxy <qualquer-comando>"
+  },
+
+  "fallback_strategy": {
+    "retry_on_fail": true,
+    "escalate_cheap_to": "balanced",
+    "escalate_balanced_to": "powerful",
+    "max_retries": 2,
+    "log_fallbacks": true
+  },
+
+  "monitoring": {
+    "track_compression_ratio": true,
+    "track_execution_time": true,
+    "track_fallback_rate": true,
+    "alert_on_poor_compression": true,
+    "poor_compression_threshold": "< 10% economia"
+  }
+}
