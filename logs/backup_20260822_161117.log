@@ -2,3 +2,98 @@
 [BACKUP] Clonando repositório...
 Cloning into 'repo'...
 [BACKUP] Sincronizando arquivos...
+Transfer starting: 81 files
+./
+.DS_Store
+ECONOMIA_TOKENS_RECOMENDACOES.md
+IMPLEMENTADO.md
+KARAJAN_CHEATSHEET.md
+MONITORAMENTO_MENSAL.md
+PROXIMOS_PASSOS.md
+RESUMO_FINAL.md
+SETUP_AUTOMATICO.md
+claude-skills-install.md
+instalar-skills.sh
+Bridges/
+Ideias/
+Ideias/claude-skills-install.md
+Ideias/instalar-skills.sh
+Prompts/
+Rotines/
+agents/
+backups/
+bin/
+bin/backup.sh
+commands/
+content-pipeline/
+create-skill/
+data-analysis/
+docs/
+docs/BACKUP_SETUP.md
+experiment-design/
+extensions/
+financiamento/
+gtm-matrix/
+handoff/
+hooks/
+hypothesis/
+imagens/
+jira-task-creation/
+karajan/
+karajan/README.md
+karajan/install_complete.sh
+karajan/setup.sh
+karajan/config/
+karajan/config/claude_code_settings.json
+karajan/config/economy.json
+karajan/config/routes.json
+karajan/hooks/
+karajan/hooks/claude_code_hook.sh
+karajan/logs/
+karajan/logs/.gitkeep
+karajan/logs/history.jsonl
+karajan/logs/monitor.jsonl
+karajan/logs/stats.json
+karajan/scripts/
+karajan/scripts/karajan.sh
+karajan/scripts/monitor.py
+karajan/scripts/orchestrator.py
+karajan/scripts/phase1_with_rtk.sh
+karajan/scripts/phase1_wrapper.py
+launch-checklist/
+logs/
+logs/backup.stderr.log
+logs/backup.stdout.log
+logs/backup_20260820_160008.log
+logs/backup_20260821_160001.log
+logs/backup_20260822_161117.log
+market-intelligence/
+meeting-recap/
+obsidian_vault/
+powers/
+queries/
+references/
+resultados/
+rotinas/
+session-index/
+sessions/
+settings/
+settings/com.claude.backup.plist
+skills/
+sprint-report/
+stakeholder-update/
+steering/
+weekly-report/
+
+sent 144530 bytes  received 1082 bytes  5003848 bytes/sec
+total size is 139096  speedup is 0.96
+[BACKUP] Preparando commit...
+[BACKUP] Fazendo commit: Backup Claude_CLI - 2026-08-22 16:11:17
+[main 319664b] Backup Claude_CLI - 2026-08-22 16:11:17
+ 3 files changed, 196 insertions(+)
+ create mode 100644 logs/backup_20260822_161117.log
+[BACKUP] Fazendo push para GitHub...
+To https://github.com/diasgthiago92/claude.git
+   159074e..319664b  main -> main
+[BACKUP] ✅ Push concluído com sucesso!
+[BACKUP] Processo finalizado às 2026-08-22 16:11:28
