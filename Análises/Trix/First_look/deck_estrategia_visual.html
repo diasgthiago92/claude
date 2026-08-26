@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trix: Estratégia de Longo Prazo | Deck Executivo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+        }
+
+        .deck-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f172a;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 60px;
+            background: linear-gradient(135deg, #0f172a 0%, #1a202c 100%);
+            color: #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: flex;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #22c55e, #10b981, #06b6d4);
+        }
+
+        .slide-header {
+            z-index: 10;
+        }
+
+        .slide-number {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #22c55e, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .slide h2 {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #86efac;
+            line-height: 1.2;
+        }
+
+        .slide-subtitle {
+            font-size: 1.3em;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 40px;
+            border-top: 1px solid rgba(34, 197, 94, 0.2);
+            z-index: 10;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(34, 197, 94, 0.2);
+            border-radius: 2px;
+            margin: 0 20px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #10b981);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-button {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #86efac;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-button:hover {
+            background: rgba(34, 197, 94, 0.3);
+            border-color: rgba(34, 197, 94, 0.8);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Slide Specific Styles */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            padding: 30px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #22c55e;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            color: #cbd5e1;
+            font-weight: 400;
+        }
+
+        .phase-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .phase-timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(34, 197, 94, 0.2);
+            z-index: 1;
+        }
+
+        .phase-node {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .phase-circle {
+            width: 40px;
+            height: 40px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .phase-circle.completed {
+            background: #10b981;
+        }
+
+        .phase-label {
+            font-size: 0.9em;
+            color: #cbd5e1;
+            margin-top: 10px;
+        }
+
+        .phase-meta {
+            font-size: 0.8em;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .metric-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(34, 197, 94, 0.1);
+            align-items: center;
+        }
+
+        .metric-row:first-child {
+            font-weight: 700;
+            color: #86efac;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            color: #cbd5e1;
+        }
+
+        .metric-value {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin: 30px 0;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(34, 197, 94, 0.1);
+            color: #cbd5e1;
+        }
+
+        .check {
+            color: #22c55e;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .x {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .warning {
+            color: #f59e0b;
+            font-weight: 700;
+        }
+
+        .vision-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid rgba(34, 197, 94, 0.4);
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            font-size: 1.3em;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .highlight {
+            color: #22c55e;
+            font-weight: 700;
+        }
+
+        .risk-item {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .risk-label {
+            color: #fca5a5;
+            font-weight: 600;
+        }
+
+        .risk-mitigation {
+            color: #cbd5e1;
+            font-size: 0.95em;
+            margin-top: 5px;
+        }
+
+        .success-item {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 3px solid #22c55e;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .success-label {
+            color: #86efac;
+            font-weight: 600;
+        }
+
+        .success-desc {
+            color: #cbd5e1;
+            font-size: 0.95em;
+            margin-top: 5px;
+        }
+
+        .chart-container {
+            background: rgba(34, 197, 94, 0.1);
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+            height: 300px;
+            margin: 30px 0;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, #22c55e, #10b981);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .bar-value {
+            color: #e2e8f0;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -30px;
+            color: #cbd5e1;
+            font-size: 0.85em;
+            white-space: nowrap;
+        }
+
+        .keyboard-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 12px;
+            color: #64748b;
+            z-index: 100;
+        }
+
+        .slide-title-center {
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-title-center h1 {
+            font-size: 4em;
+            margin-bottom: 30px;
+        }
+
+        .slide-title-center .subtitle {
+            font-size: 1.5em;
+            color: #cbd5e1;
+            font-weight: 300;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 30px 0;
+        }
+
+        .column-title {
+            font-size: 1.3em;
+            color: #86efac;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(34, 197, 94, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .item-list {
+            list-style: none;
+        }
+
+        .item-list li {
+            padding: 10px 0;
+            color: #cbd5e1;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .item-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #22c55e;
+            font-weight: 700;
+        }
+
+        .emoji {
+            font-size: 1.1em;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="deck-container">
+        <!-- SLIDE 1: TITLE -->
+        <div class="slide active">
+            <div class="slide-header">
+                <div class="slide-number">01</div>
+            </div>
+            <div class="slide-content slide-title-center">
+                <h1>TRIX</h1>
+                <h2 style="color: #22c55e; margin-bottom: 40px;">Estratégia de Longo Prazo</h2>
+                <p class="subtitle">Roadmap de 5 Anos | Visão 2031</p>
+            </div>
+            <div class="slide-footer">
+                <span style="color: #64748b;">CPO Strategy | Agosto 2026</span>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 5%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: THE PROBLEM & OPPORTUNITY -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">02</div>
+                <h2>O Problema & Oportunidade</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <div class="column-title">🚨 O Problema</div>
+                        <ul class="item-list">
+                            <li><span class="emoji">🇧🇷</span>100M de brasileiros têm < R$ 500</li>
+                            <li><span class="emoji">😰</span>80% têm medo: "não entendo"</li>
+                            <li><span class="emoji">📈</span>Imóvel = ativo preferido</li>
+                            <li><span class="emoji">❌</span>Mas XP/Nubank não educam FII</li>
+                            <li><span class="emoji">💤</span>Mercado de FII sub-explorado</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="column-title">⭐ A Oportunidade</div>
+                        <ul class="item-list">
+                            <li><span class="emoji">📊</span>R$ 500B AUM em FII</li>
+                            <li><span class="emoji">📈</span>+40% crescimento a.a.</li>
+                            <li><span class="emoji">👥</span>Apenas 2M investem em FII</li>
+                            <li><span class="emoji">🏆</span>Nenhum especialista dominante</li>
+                            <li><span class="emoji">🎯</span>Mercado = Brecha óbvia</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 10%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: VISION -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">03</div>
+                <h2>Visão 2031</h2>
+            </div>
+            <div class="slide-content">
+                <div class="vision-box">
+                    <span class="emoji">🎯</span>
+                    "Ser a plataforma de investimento em imóveis <span class="highlight">mais confiável e educada</span> do Brasil, tornando <span class="highlight">acessível para qualquer brasileiro</span> começar a montar patrimônio imobiliário digital."
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">#1</div>
+                        <div class="stat-label">em volume de FII (Brasil)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">1M+</div>
+                        <div class="stat-label">usuários ativos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">NPS 70+</div>
+                        <div class="stat-label">satisfação de usuários</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">R$ 5B</div>
+                        <div class="stat-label">patrimônio investido</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 15%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: POSITIONING -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">04</div>
+                <h2>Posicionamento Estratégico</h2>
+            </div>
+            <div class="slide-content">
+                <div style="margin: 40px 0;">
+                    <div style="text-align: center; margin-bottom: 50px;">
+                        <div style="font-size: 2em; color: #86efac; font-weight: 700; margin-bottom: 20px;">
+                            "Trix é o <span style="color: #22c55e;">XP para FII</span>"
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(34, 197, 94, 0.1); padding: 30px; border-radius: 8px; margin: 30px 0;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px;">
+                            <div style="text-align: center;">
+                                <div style="color: #f59e0b; font-size: 1.3em; font-weight: 700; margin-bottom: 10px;">XP/BTG/Nubank</div>
+                                <div style="color: #cbd5e1; font-size: 0.95em;">Generalistas<br>Todas classes<br>Superficial</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="color: #64748b; font-size: 1.5em;">→</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="color: #22c55e; font-size: 1.3em; font-weight: 700; margin-bottom: 10px;">TRIX</div>
+                                <div style="color: #cbd5e1; font-size: 0.95em;">Especialista<br>FII Only<br>Educação Profunda</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 40px; padding: 20px; background: rgba(34, 197, 94, 0.15); border-left: 4px solid #22c55e; border-radius: 4px;">
+                        <div style="color: #86efac; font-weight: 700; margin-bottom: 10px;">Mensagem Principal</div>
+                        <div style="color: #e2e8f0; font-size: 1.2em;">"<span class="highlight">Invista em imóveis a partir de R$ 150</span>, com educação completa e comunidade"</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 20%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: 5 PHASES -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">05</div>
+                <h2>Roadmap: 5 Fases Estratégicas</h2>
+            </div>
+            <div class="slide-content">
+                <div class="phase-timeline">
+                    <div class="phase-node">
+                        <div class="phase-circle">1</div>
+                        <div style="font-weight: 700; color: #86efac;">Fundação</div>
+                        <div class="phase-label">6 meses</div>
+                        <div class="phase-meta">50k MAU</div>
+                    </div>
+                    <div class="phase-node">
+                        <div class="phase-circle">2</div>
+                        <div style="font-weight: 700; color: #86efac;">Tração</div>
+                        <div class="phase-label">12 meses</div>
+                        <div class="phase-meta">200k MAU</div>
+                    </div>
+                    <div class="phase-node">
+                        <div class="phase-circle">3</div>
+                        <div style="font-weight: 700; color: #86efac;">Liderança</div>
+                        <div class="phase-label">18 meses</div>
+                        <div class="phase-meta">500k MAU</div>
+                    </div>
+                    <div class="phase-node">
+                        <div class="phase-circle">4</div>
+                        <div style="font-weight: 700; color: #86efac;">Scaling</div>
+                        <div class="phase-label">18 meses</div>
+                        <div class="phase-meta">1M MAU</div>
+                    </div>
+                    <div class="phase-node">
+                        <div class="phase-circle">5</div>
+                        <div style="font-weight: 700; color: #86efac;">Domínio</div>
+                        <div class="phase-label">6 meses</div>
+                        <div class="phase-meta">5M MAU</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 60px; padding: 20px; background: rgba(34, 197, 94, 0.1); border-radius: 8px;">
+                    <div style="color: #86efac; font-weight: 700; margin-bottom: 10px;">Focal Points por Fase:</div>
+                    <ul class="item-list">
+                        <li><span class="emoji">🎓</span>F1: Educação FII + Onboarding gamificado</li>
+                        <li><span class="emoji">👥</span>F2: Comunidade + Análise + Referral viral</li>
+                        <li><span class="emoji">🏆</span>F3: Análise avançada + Notícias + Premium</li>
+                        <li><span class="emoji">🤖</span>F4: IA + Bancário integrado + Expansão LATAM</li>
+                        <li><span class="emoji">💰</span>F5: IPO / Unicórnio / Consolidação</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 25%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: PHASE 1 DETAILS -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">06</div>
+                <h2><span class="emoji">🔧</span> Fase 1: Fundação (6 meses)</h2>
+                <div class="slide-subtitle">Dominar o básico | MVP robusto</div>
+            </div>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <div class="column-title">Pilares</div>
+                        <ul class="item-list">
+                            <li><span class="emoji">📚</span>Trix Academy (5 vídeos)</li>
+                            <li><span class="emoji">🎮</span>Onboarding gamificado</li>
+                            <li><span class="emoji">💬</span>Chat 24h + bot</li>
+                            <li><span class="emoji">📊</span>Cotações reais</li>
+                            <li><span class="emoji">🏦</span>Open Banking</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="column-title">Resultados Esperados</div>
+                        <div class="stat-card" style="margin-bottom: 15px;">
+                            <div class="stat-value" style="font-size: 1.8em;">50k</div>
+                            <div class="stat-label">MAU (vs 5k atual)</div>
+                        </div>
+                        <div class="stat-card" style="margin-bottom: 15px;">
+                            <div class="stat-value" style="font-size: 1.8em;">40%</div>
+                            <div class="stat-label">Activation rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size: 1.8em;">R$ 20</div>
+                            <div class="stat-label">CAC (via referral)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: rgba(34, 197, 94, 0.1); border-radius: 8px;">
+                    <div style="color: #86efac; font-weight: 700; margin-bottom: 10px;">💰 Budget Indicativo</div>
+                    <div style="color: #cbd5e1;">R$ 500k-800k: Eng (200k) + Educação (150k) + Marketing (150k) + Suporte (100k)</div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 30%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: NUMBERS PROJECTION -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">07</div>
+                <h2>Projeção de Números (5 Anos)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="metric-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
+                    <div class="metric-label"><strong>Métrica</strong></div>
+                    <div class="metric-label"><strong>Ano 1</strong></div>
+                    <div class="metric-label"><strong>Ano 2</strong></div>
+                    <div class="metric-label"><strong>Ano 3</strong></div>
+                    <div class="metric-label"><strong>Ano 5</strong></div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">MAU</div>
+                    <div class="metric-value">50k</div>
+                    <div class="metric-value">200k</div>
+                    <div class="metric-value">500k</div>
+                    <div class="metric-value">5M</div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">AUM (Patrimônio)</div>
+                    <div class="metric-value">R$ 50M</div>
+                    <div class="metric-value">R$ 500M</div>
+                    <div class="metric-value">R$ 2B</div>
+                    <div class="metric-value">R$ 20B</div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">Revenue</div>
+                    <div class="metric-value">R$ 1M</div>
+                    <div class="metric-value">R$ 5M</div>
+                    <div class="metric-value">R$ 15M</div>
+                    <div class="metric-value">R$ 150M+</div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">Valuation</div>
+                    <div class="metric-value">R$ 50M</div>
+                    <div class="metric-value">R$ 500M</div>
+                    <div class="metric-value">R$ 2B</div>
+                    <div class="metric-value">R$ 5-10B</div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: rgba(34, 197, 94, 0.15); border-radius: 8px; text-align: center;">
+                    <div style="color: #86efac; font-weight: 700; font-size: 1.2em;">
+                        <span class="emoji">🦄</span> Trajeto: Startup → Unicórnio (IPO 2030)
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 35%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: COMPARISON -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">08</div>
+                <h2>Trix vs Concorrentes</h2>
+            </div>
+            <div class="slide-content">
+                <table class="comparison-table">
+                    <tr>
+                        <th>Dimensão</th>
+                        <th style="color: #cbd5e1;">XP</th>
+                        <th style="color: #cbd5e1;">Nubank</th>
+                        <th style="color: #cbd5e1;">Rico</th>
+                        <th style="color: #22c55e;">TRIX</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Especialidade</strong></td>
+                        <td>Bolsa</td>
+                        <td>Geral</td>
+                        <td>Educação</td>
+                        <td><span class="check">✓ FII</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TAM</strong></td>
+                        <td>R$ 300B</td>
+                        <td>R$ 1T</td>
+                        <td>R$ 1T</td>
+                        <td><span class="check">✓ R$ 500B</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Educação</strong></td>
+                        <td>Básica</td>
+                        <td>Superficial</td>
+                        <td>Profunda</td>
+                        <td><span class="check">✓ Profunda</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Comunidade</strong></td>
+                        <td>Forum silencioso</td>
+                        <td>Nenhuma</td>
+                        <td>Ativa</td>
+                        <td><span class="check">✓ Engajada</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>UX/Design</strong></td>
+                        <td>Complexa</td>
+                        <td>Simples</td>
+                        <td>Média</td>
+                        <td><span class="check">✓ Elegante</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vencedor em FII</strong></td>
+                        <td><span class="x">✗</span></td>
+                        <td><span class="x">✗</span></td>
+                        <td><span class="warning">~</span></td>
+                        <td><span class="check">✓ SIM</span></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 40%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: CRITICAL SUCCESS FACTORS -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">09</div>
+                <h2>Críticos de Sucesso</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <div class="column-title"><span class="emoji">✅</span> Deve Fazer</div>
+                        <div class="success-item">
+                            <div class="success-label">Ser especialista em FII</div>
+                            <div class="success-desc">Não genérica como XP</div>
+                        </div>
+                        <div class="success-item">
+                            <div class="success-label">Educação profunda</div>
+                            <div class="success-desc">Não superficial</div>
+                        </div>
+                        <div class="success-item">
+                            <div class="success-label">Comunidade engajada</div>
+                            <div class="success-desc">Não silenciosa</div>
+                        </div>
+                        <div class="success-item">
+                            <div class="success-label">UX delightful</div>
+                            <div class="success-desc">App bonito é diferencial</div>
+                        </div>
+                        <div class="success-item">
+                            <div class="success-label">Confiabilidade 99.99%</div>
+                            <div class="success-desc">Investimento = confiança</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="column-title"><span class="emoji">❌</span> Não Fazer</div>
+                        <div class="risk-item">
+                            <div class="risk-label">Tentar ser XP</div>
+                            <div class="risk-mitigation">Diferencial = especialização</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">Lançar 10 produtos</div>
+                            <div class="risk-mitigation">Foco em FII primeiro</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">Negligenciar educação</div>
+                            <div class="risk-mitigation">É o diferencial</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">Copiar Nubank</div>
+                            <div class="risk-mitigation">Genérico = fracasso</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">Cortar suporte</div>
+                            <div class="risk-mitigation">Suporte rápido = retention</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 45%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: RISKS -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">10</div>
+                <h2>Riscos & Mitigação</h2>
+            </div>
+            <div class="slide-content">
+                <div class="risk-item">
+                    <div class="risk-label">🚨 XP lança FII Academy</div>
+                    <div class="risk-mitigation"><strong>Probabilidade:</strong> Alta | <strong>Impacto:</strong> Alto<br><strong>Mitigação:</strong> Ser 3x melhor; relacionamento com gestores</div>
+                </div>
+
+                <div class="risk-item">
+                    <div class="risk-label">📜 Regulação aperta (CVM)</div>
+                    <div class="risk-mitigation"><strong>Probabilidade:</strong> Média | <strong>Impacto:</strong> Alto<br><strong>Mitigação:</strong> Compliance desde dia 1; time legal</div>
+                </div>
+
+                <div class="risk-item">
+                    <div class="risk-label">📉 Economia cai</div>
+                    <div class="risk-mitigation"><strong>Probabilidade:</strong> Média | <strong>Impacto:</strong> Alto<br><strong>Mitigação:</strong> Educação = stickiness; foco em retenção</div>
+                </div>
+
+                <div class="risk-item">
+                    <div class="risk-label">🔓 Bug/Segurança</div>
+                    <div class="risk-mitigation"><strong>Probabilidade:</strong> Baixa | <strong>Impacto:</strong> Crítico<br><strong>Mitigação:</strong> Audit trimestral; bug bounty program</div>
+                </div>
+
+                <div class="risk-item">
+                    <div class="risk-label">👨‍💼 Talent leave</div>
+                    <div class="risk-mitigation"><strong>Probabilidade:</strong> Média | <strong>Impacto:</strong> Médio<br><strong>Mitigação:</strong> Equity; cultura; desafio</div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 50%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: NEXT 90 DAYS -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">11</div>
+                <h2>Próximos 90 Dias (Tático)</h2>
+            </div>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <div class="column-title">Sprint 1-2 (Semanas 1-4)</div>
+                        <ul class="item-list">
+                            <li><span class="emoji">✅</span>Educação (5 vídeos)</li>
+                            <li><span class="emoji">✅</span>Onboarding gamificado</li>
+                            <li><span class="emoji">✅</span>Chat suporte</li>
+                            <li><span class="emoji">✅</span>Cotações reais</li>
+                            <li><span class="emoji">✅</span>Metricas & analytics</li>
+                        </ul>
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(34, 197, 94, 0.1); border-radius: 4px;">
+                            <div style="color: #86efac; font-weight: 600; font-size: 0.9em;">OKR: 20k MAU | 20% activation</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="column-title">Sprint 3-4 (Semanas 5-8)</div>
+                        <ul class="item-list">
+                            <li><span class="emoji">✅</span>Referral program</li>
+                            <li><span class="emoji">✅</span>Trix Academy</li>
+                            <li><span class="emoji">✅</span>Open Banking</li>
+                            <li><span class="emoji">✅</span>1º parceria (creator)</li>
+                            <li><span class="emoji">✅</span>NPS baseline</li>
+                        </ul>
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(34, 197, 94, 0.1); border-radius: 4px;">
+                            <div style="color: #86efac; font-weight: 600; font-size: 0.9em;">OKR: 35k MAU | 30% activation | NPS 40</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: rgba(34, 197, 94, 0.15); border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <div style="color: #86efac; font-weight: 700; margin-bottom: 10px;">Sprint 5-6 (Semanas 9-12)</div>
+                    <ul class="item-list" style="columns: 2;">
+                        <li><span class="emoji">✅</span>Community Discord</li>
+                        <li><span class="emoji">✅</span>Ranking carteiras</li>
+                        <li><span class="emoji">✅</span>Dashboard comparação</li>
+                        <li><span class="emoji">✅</span>5 influencers</li>
+                    </ul>
+                    <div style="margin-top: 15px; color: #e2e8f0; font-size: 0.95em;">
+                        <strong>OKR Final:</strong> 50k MAU | 40% activation | NPS 50
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 55%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: ORGANIZATION -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">12</div>
+                <h2>Estrutura Organizacional</h2>
+            </div>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px;">
+                    <div style="background: rgba(34, 197, 94, 0.1); padding: 25px; border-radius: 8px;">
+                        <div style="color: #86efac; font-weight: 700; margin-bottom: 15px;">📅 Mês 6 (MVP)</div>
+                        <ul class="item-list" style="font-size: 0.9em;">
+                            <li><span class="emoji">👨‍💼</span>CEO/Founder</li>
+                            <li><span class="emoji">⚙️</span>VP Eng (4 devs)</li>
+                            <li><span class="emoji">📦</span>VP Product</li>
+                            <li><span class="emoji">📈</span>VP Growth</li>
+                            <li><span class="emoji">💬</span>Head Support</li>
+                            <li><span class="emoji">📊</span>Finance/Ops</li>
+                        </ul>
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(34, 197, 94, 0.2); border-radius: 4px;">
+                            <div style="color: #86efac; font-weight: 600; font-size: 0.85em;">Total: 10 pessoas</div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(34, 197, 94, 0.1); padding: 25px; border-radius: 8px;">
+                        <div style="color: #86efac; font-weight: 700; margin-bottom: 15px;">📅 Mês 18 (Tração)</div>
+                        <ul class="item-list" style="font-size: 0.9em;">
+                            <li><span class="emoji">👨‍💼</span>CEO</li>
+                            <li><span class="emoji">⚙️</span>CTO (8 devs)</li>
+                            <li><span class="emoji">📦</span>Head Product</li>
+                            <li><span class="emoji">📈</span>Head Growth</li>
+                            <li><span class="emoji">🎨</span>Head Design</li>
+                            <li><span class="emoji">📊</span>Head Data</li>
+                            <li><span class="emoji">💬</span>+3 suporte</li>
+                        </ul>
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(34, 197, 94, 0.2); border-radius: 4px;">
+                            <div style="color: #86efac; font-weight: 600; font-size: 0.85em;">Total: 25 pessoas</div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(34, 197, 94, 0.1); padding: 25px; border-radius: 8px;">
+                        <div style="color: #86efac; font-weight: 700; margin-bottom: 15px;">📅 Mês 36 (Líder)</div>
+                        <ul class="item-list" style="font-size: 0.9em;">
+                            <li><span class="emoji">👨‍💼</span>CEO</li>
+                            <li><span class="emoji">⚙️</span>CTO</li>
+                            <li><span class="emoji">📦</span>VP Product (+3 PMs)</li>
+                            <li><span class="emoji">📈</span>VP Growth</li>
+                            <li><span class="emoji">👥</span>VP Community</li>
+                            <li><span class="emoji">⚖️</span>Head Legal</li>
+                            <li><span class="emoji">🎯</span>+ops, design, data</li>
+                        </ul>
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(34, 197, 94, 0.2); border-radius: 4px;">
+                            <div style="color: #86efac; font-weight: 600; font-size: 0.85em;">Total: 60+ pessoas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 60%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: VISION 2031 -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">13</div>
+                <h2><span class="emoji">🎯</span> Visão 2031</h2>
+            </div>
+            <div class="slide-content slide-title-center">
+                <div style="text-align: left;">
+                    <div style="background: rgba(34, 197, 94, 0.15); padding: 40px; border-radius: 12px; border: 2px solid rgba(34, 197, 94, 0.4); margin-bottom: 30px;">
+                        <p style="font-size: 1.3em; line-height: 1.8; color: #e2e8f0;">
+                            <span class="highlight">"Trix tornou o investimento imobiliário acessível para qualquer brasileiro, independente de renda."</span><br><br>
+                            Criou uma comunidade de <span class="highlight">1M+ de investidores educados</span>.<br><br>
+                            E provou que <span class="highlight">especialização bate generalismo</span>."
+                        </p>
+                    </div>
+
+                    <div class="stat-grid" style="margin-top: 40px;">
+                        <div class="stat-card">
+                            <div class="stat-value">1M+</div>
+                            <div class="stat-label">Usuários ativos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">R$ 5B</div>
+                            <div class="stat-label">Patrimônio investido</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">R$ 150M+</div>
+                            <div class="stat-label">Revenue anual</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">R$ 5-10B</div>
+                            <div class="stat-label">Valuation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 65%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: KEY DECISIONS -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">14</div>
+                <h2>Decisões Estratégicas</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <div class="column-title"><span class="emoji">✅</span> SIM</div>
+                        <div class="success-item">
+                            <div class="success-label">Especializar em FII</div>
+                            <div class="success-desc">Foco profundo > amplitude</div>
+                        </div>
+                        <div class="success-item">
+                            <div class="success-label">Investir em educação</div>
+                            <div class="success-desc">Diferencial competitivo</div>
+                        </div>
+                        <div class="success-item">
+                            <div class="success-label">Construir comunidade</div>
+                            <div class="success-desc">Retenção + valor</div>
+                        </div>
+                        <div class="success-item">
+                            <div class="success-label">Expandir LATAM (Ano 3)</div>
+                            <div class="success-desc">Mercado adjacente</div>
+                        </div>
+                        <div class="success-item">
+                            <div class="success-label">IPO em 2030</div>
+                            <div class="success-desc">Ambição clara</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="column-title"><span class="emoji">❌</span> NÃO</div>
+                        <div class="risk-item">
+                            <div class="risk-label">Lançar cripto cedo</div>
+                            <div class="risk-mitigation">Valida FII primeiro</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">Fazer banco digital</div>
+                            <div class="risk-mitigation">Distração do core</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">Competir em preço</div>
+                            <div class="risk-mitigation">Perder margem</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">Ignorar compliance</div>
+                            <div class="risk-mitigation">Risco regulatório</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">Crescer muito rápido</div>
+                            <div class="risk-mitigation">Quebrar operacionalmente</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 70%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: CALL TO ACTION -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">15</div>
+            </div>
+            <div class="slide-content slide-title-center">
+                <div>
+                    <h2 style="font-size: 2.5em; margin-bottom: 40px;">Pronto para Começar?</h2>
+
+                    <div style="background: rgba(34, 197, 94, 0.15); padding: 40px; border-radius: 12px; border: 2px solid rgba(34, 197, 94, 0.4); margin: 30px 0;">
+                        <div style="font-size: 1.2em; color: #e2e8f0; line-height: 1.8;">
+                            <span class="emoji">🎯</span> <strong>Próximos 90 dias:</strong> MVP robusto + validar hipótese (50k MAU)<br><br>
+                            <span class="emoji">📈</span> <strong>Próximos 12 meses:</strong> Atingir tração (200k MAU)<br><br>
+                            <span class="emoji">🏆</span> <strong>Próximos 3 anos:</strong> Dominar nicho + expandir LATAM (500k MAU)<br><br>
+                            <span class="emoji">🦄</span> <strong>Próximos 5 anos:</strong> IPO / Unicórnio (1M MAU, R$ 5B AUM)
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 50px; font-size: 1.5em; color: #86efac; font-weight: 700;">
+                        <span class="emoji">⚡</span> Trix tem potencial de ser o <span style="color: #22c55e;">Airbnb do investimento imobiliário</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <button class="nav-button" onclick="prevSlide()">← Anterior</button>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 100%"></div>
+                </div>
+                <button class="nav-button" onclick="nextSlide()" disabled>Fim</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="keyboard-hint">
+        ⌨️ Use ← → ou setas do teclado
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[n].classList.add('active');
+
+            // Update progress
+            const progress = ((n + 1) / totalSlides) * 100;
+            document.querySelectorAll('.progress').forEach(p => {
+                p.style.width = progress + '%';
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        showSlide(0);
+    </script>
+</body>
+</html>

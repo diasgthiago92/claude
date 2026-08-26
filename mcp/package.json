@@ -1,0 +1,18 @@
+{
+  "name": "google-docs-mcp",
+  "version": "1.0.0",
+  "description": "MCP Server para integração com Google Docs",
+  "main": "google-docs-server.js",
+  "scripts": {
+    "start": "node google-docs-server.js",
+    "test": "node -e \"console.log('MCP Server está funcional')\""
+  },
+  "dependencies": {
+    "googleapis": "^118.0.0",
+    "@anthropic-ai/sdk": "^0.16.0"
+  },
+  "devDependencies": {},
+  "keywords": ["mcp", "google-docs", "claude"],
+  "author": "Thiago Dias",
+  "license": "MIT"
+}
