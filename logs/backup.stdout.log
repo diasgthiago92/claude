@@ -832,3 +832,158 @@ To https://github.com/diasgthiago92/claude.git
 [BACKUP] Clonando repositório...
 Cloning into 'repo'...
 [BACKUP] Sincronizando arquivos...
+Transfer starting: 137 files
+./
+.DS_Store
+CONFIG_ROTINAS.md
+ECONOMIA_TOKENS_RECOMENDACOES.md
+IMPLEMENTADO.md
+INDEX.md
+KARAJAN_CHEATSHEET.md
+MONITORAMENTO_MENSAL.md
+PROXIMOS_PASSOS.md
+README_INDEX.md
+README_TOKEN_TRACKER.md
+RESUMO_FINAL.md
+SETUP_AUTOMATICO.md
+claude-skills-install.md
+instalar-skills.sh
+Análises/
+Análises/.DS_Store
+Análises/Trix/
+Análises/Trix/.DS_Store
+Análises/Trix/First_look/
+Análises/Trix/First_look/.DS_Store
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.30 (1).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.30 (2).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.30 (3).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.30 (4).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.30.jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.31 (1).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.31 (2).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.31 (3).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.31 (4).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.31.jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.32 (1).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.32 (2).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.32 (3).jpeg
+Análises/Trix/First_look/WhatsApp Image 2026-08-26 at 12.58.32.jpeg
+Análises/Trix/First_look/analise_completa.md
+Análises/Trix/First_look/analise_visual.html
+Análises/Trix/First_look/comparacao_mercado.md
+Análises/Trix/First_look/deck_estrategia_visual.html
+Análises/Trix/First_look/estrategia_cpo_longo_prazo.md
+Análises/Trix/First_look/guia_integracao_google_docs.md
+Análises/Trix/First_look/resumo_executivo.html
+Bridges/
+Ideias/
+Ideias/claude-skills-install.md
+Ideias/instalar-skills.sh
+Prompts/
+Rotines/
+agents/
+backups/
+bin/
+bin/backup.sh
+commands/
+content-pipeline/
+create-skill/
+data-analysis/
+docs/
+docs/BACKUP_SETUP.md
+experiment-design/
+extensions/
+financiamento/
+gtm-matrix/
+handoff/
+hooks/
+hypothesis/
+imagens/
+jira-task-creation/
+karajan/
+karajan/README.md
+karajan/install_complete.sh
+karajan/setup.sh
+karajan/config/
+karajan/config/claude_code_settings.json
+karajan/config/economy.json
+karajan/config/routes.json
+karajan/hooks/
+karajan/hooks/claude_code_hook.sh
+karajan/logs/
+karajan/logs/.gitkeep
+karajan/logs/history.jsonl
+karajan/logs/monitor.jsonl
+karajan/logs/stats.json
+karajan/scripts/
+karajan/scripts/karajan.sh
+karajan/scripts/monitor.py
+karajan/scripts/orchestrator.py
+karajan/scripts/phase1_with_rtk.sh
+karajan/scripts/phase1_wrapper.py
+launch-checklist/
+logs/
+logs/backup.stderr.log
+logs/backup.stdout.log
+logs/backup_20260820_160008.log
+logs/backup_20260821_160001.log
+logs/backup_20260822_161117.log
+logs/backup_20260823_160335.log
+logs/backup_20260824_160005.log
+logs/backup_20260825_160004.log
+logs/backup_20260826_160004.log
+logs/backup_20260827_160004.log
+logs/token-usage/
+market-intelligence/
+mcp/
+mcp/INTEGRACOES.md
+mcp/google-docs-server.js
+mcp/google-drive-server.js
+mcp/google-gmail-server.js
+mcp/google-slides-server.js
+mcp/package-lock.json
+mcp/package.json
+mcp/setup-completo.sh
+mcp/setup-mcp.md
+mcp/setup.sh
+meeting-recap/
+obsidian_vault/
+powers/
+queries/
+references/
+resultados/
+rotinas/
+scripts/
+scripts/README_GOOGLE_DOCS.md
+scripts/create_google_doc.py
+scripts/daily-token-report.sh
+scripts/generate-index.py
+scripts/index-manager.sh
+scripts/token-dashboard.html
+scripts/token-tracker.py
+session-index/
+sessions/
+settings/
+settings/com.claude.backup.plist
+skills/
+sprint-report/
+stakeholder-update/
+steering/
+weekly-report/
+
+sent 1442031 bytes  received 2218 bytes  18978304 bytes/sec
+total size is 1430660  speedup is 0.99
+[BACKUP] Preparando commit...
+[BACKUP] Fazendo commit: Backup Claude_CLI - 2026-08-27 16:00:04
+[main 6b436c3] Backup Claude_CLI - 2026-08-27 16:00:04
+ 3 files changed, 398 insertions(+)
+ create mode 100644 logs/backup_20260827_160004.log
+[BACKUP] Fazendo push para GitHub...
+To https://github.com/diasgthiago92/claude.git
+   ba7aba0..6b436c3  main -> main
+[BACKUP] ✅ Push concluído com sucesso!
+[BACKUP] Processo finalizado às 2026-08-27 16:00:09
+[BACKUP] Iniciando sincronização às 2026-08-28 16:00:05
+[BACKUP] Clonando repositório...
+Cloning into 'repo'...
+[BACKUP] Sincronizando arquivos...
