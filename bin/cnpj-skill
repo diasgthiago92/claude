@@ -1,0 +1,431 @@
+#!/bin/bash
+
+# CNPJ Skill - Consulta integrada de CNPJs brasileiros
+# Integra múltiplas APIs e fontes de dados
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CNPJ_PROJECT="$SCRIPT_DIR/cnpj-explorer"
+CACHE_DIR="$HOME/.cache/cnpj-skill"
+LOG_DIR="$HOME/.local/share/cnpj-skill"
+
+# Cores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Criar diretórios necessários
+mkdir -p "$CACHE_DIR" "$LOG_DIR"
+
+# ============================================================================
+# Funções Utilitárias
+# ============================================================================
+
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1" | tee -a "$LOG_DIR/cnpj-skill.log"
+}
+
+log_success() {
+    echo -e "${GREEN}[✓]${NC} $1" | tee -a "$LOG_DIR/cnpj-skill.log"
+}
+
+log_error() {
+    echo -e "${RED}[✗]${NC} $1" | tee -a "$LOG_DIR/cnpj-skill.log"
+}
+
+log_warn() {
+    echo -e "${YELLOW}[!]${NC} $1" | tee -a "$LOG_DIR/cnpj-skill.log"
+}
+
+# ============================================================================
+# Validação de CNPJ
+# ============================================================================
+
+validate_cnpj() {
+    local cnpj=$1
+
+    # Remove formatação
+    cnpj=$(echo "$cnpj" | sed 's/[^0-9]//g')
+
+    # Verifica tamanho
+    if [[ ${#cnpj} -ne 14 ]]; then
+        return 1
+    fi
+
+    # Algoritmo de validação
+    local sum=0
+    local first_factor=5
+
+    for ((i=0; i<12; i++)); do
+        sum=$((sum + ${cnpj:$i:1} * first_factor))
+        first_factor=$((first_factor == 2 ? 9 : first_factor - 1))
+    done
+
+    local first_digit=$((11 - (sum % 11)))
+    first_digit=$((first_digit > 9 ? 0 : first_digit))
+
+    if [[ ${cnpj:12:1} -ne $first_digit ]]; then
+        return 1
+    fi
+
+    sum=0
+    local second_factor=6
+
+    for ((i=0; i<13; i++)); do
+        sum=$((sum + ${cnpj:$i:1} * second_factor))
+        second_factor=$((second_factor == 2 ? 9 : second_factor - 1))
+    done
+
+    local second_digit=$((11 - (sum % 11)))
+    second_digit=$((second_digit > 9 ? 0 : second_digit))
+
+    if [[ ${cnpj:13:1} -ne $second_digit ]]; then
+        return 1
+    fi
+
+    return 0
+}
+
+# ============================================================================
+# Consulta via BrasilAPI (Gratuita)
+# ============================================================================
+
+consulta_brasilapi() {
+    local cnpj=$1
+    local cache_file="$CACHE_DIR/brasilapi_${cnpj}.json"
+
+    # Verifica cache (24 horas)
+    if [[ -f "$cache_file" ]]; then
+        local file_age=$(($(date +%s) - $(stat -f %m "$cache_file" 2>/dev/null || echo 0)))
+        if [[ $file_age -lt 86400 ]]; then
+            log_info "Usando cache local para $cnpj"
+            cat "$cache_file"
+            return 0
+        fi
+    fi
+
+    log_info "Consultando BrasilAPI para $cnpj..."
+
+    if command -v curl &> /dev/null; then
+        local response=$(curl -s "https://brasilapi.com.br/api/cnpj/v1/$cnpj")
+
+        if echo "$response" | grep -q '"razao_social"'; then
+            echo "$response" | tee "$cache_file"
+            log_success "Dados obtidos com sucesso"
+            return 0
+        else
+            log_error "CNPJ não encontrado ou erro na API"
+            return 1
+        fi
+    else
+        log_error "curl não encontrado"
+        return 1
+    fi
+}
+
+# ============================================================================
+# Consulta via Receita Federal (dados públicos)
+# ============================================================================
+
+gerar_relatorio_completo() {
+    local cnpj=$1
+    local formato=${2:-markdown}
+
+    if ! command -v python3 &> /dev/null; then
+        log_error "Python3 não encontrado"
+        return 1
+    fi
+
+    log_info "Gerando relatório completo (sócios, LinkedIn, situação fiscal)..."
+
+    local uv_path="$HOME/.local/bin/uv"
+    if [[ -f "$uv_path" ]]; then
+        (cd "$CNPJ_PROJECT" && "$uv_path" run --with requests --with urllib3 --with python-dotenv python3 cli/cnpj_cli.py --full "$cnpj" --format "$formato")
+    else
+        (cd "$CNPJ_PROJECT" && python3 cli/cnpj_cli.py --full "$cnpj" --format "$formato")
+    fi
+}
+
+# ============================================================================
+# Exportar para Excel
+# ============================================================================
+
+exportar_excel() {
+    local cnpj=$1
+    local output=$2
+
+    if ! command -v python3 &> /dev/null; then
+        log_error "Python3 não encontrado"
+        return 1
+    fi
+
+    log_info "Exportando para Excel..."
+
+    python3 << 'EOF'
+import json
+import sys
+import os
+
+try:
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill
+except ImportError:
+    print("openpyxl não instalado. Execute: pip install openpyxl")
+    sys.exit(1)
+
+cnpj = sys.argv[1]
+output_file = sys.argv[2] if len(sys.argv) > 2 else f"{cnpj}_dados.xlsx"
+
+# Aqui você faria a consulta e popularia o arquivo
+# Este é um exemplo básico
+wb = openpyxl.Workbook()
+ws = wb.active
+ws.title = "Dados CNPJ"
+
+ws['A1'] = "CNPJ"
+ws['B1'] = "Razão Social"
+ws['C1'] = "Situação"
+
+ws['A2'] = cnpj
+
+wb.save(output_file)
+print(f"Arquivo criado: {output_file}")
+EOF
+
+    return $?
+}
+
+# ============================================================================
+# Modo Batch (múltiplos CNPJs)
+# ============================================================================
+
+processar_batch() {
+    local arquivo=$1
+    local formato=${2:-json}
+
+    if [[ ! -f "$arquivo" ]]; then
+        log_error "Arquivo não encontrado: $arquivo"
+        return 1
+    fi
+
+    log_info "Processando lote de CNPJs..."
+
+    local output_file="$CACHE_DIR/batch_resultado_$(date +%s).$formato"
+
+    while IFS= read -r cnpj; do
+        cnpj=$(echo "$cnpj" | xargs) # trim whitespace
+
+        if [[ -z "$cnpj" ]] || [[ "$cnpj" == \#* ]]; then
+            continue
+        fi
+
+        log_info "Processando: $cnpj"
+        consulta_brasilapi "$cnpj" >> "$output_file" 2>/dev/null || true
+    done < "$arquivo"
+
+    log_success "Resultados salvos em: $output_file"
+}
+
+# ============================================================================
+# Menu e Help
+# ============================================================================
+
+show_help() {
+    cat << 'EOF'
+
+  📊 CNPJ Skill - Consulta Integrada de CNPJs
+
+  USO:
+    cnpj-skill [OPÇÃO] [ARGUMENTO]
+
+  OPÇÕES:
+
+    --cnpj <CNPJ>           Consultar um CNPJ específico
+                            Exemplo: cnpj-skill --cnpj 11222333000181
+
+    --search <TERMO>        Buscar por razão social
+                            Exemplo: cnpj-skill --search "Amazon"
+
+    --validate <CNPJ>       Apenas validar formato do CNPJ
+                            Exemplo: cnpj-skill --validate 11222333000181
+
+    --brasilapi <CNPJ>      Usar API pública BrasilAPI (gratuita, rápida)
+                            Exemplo: cnpj-skill --brasilapi 11222333000181
+
+    --full <CNPJ>           Relatório completo: sócios + LinkedIn + situação fiscal
+                            Exemplo: cnpj-skill --full 11222333000181
+
+    --batch <ARQUIVO>       Processar múltiplos CNPJs de arquivo
+                            Arquivo deve ter 1 CNPJ por linha
+                            Exemplo: cnpj-skill --batch lista.txt
+
+    --export <CNPJ> <FILE>  Exportar para Excel
+                            Exemplo: cnpj-skill --export 11222333000181 dados.xlsx
+
+    --cache <AÇÃO>          Gerenciar cache
+                            Ações: clear, list, stats
+                            Exemplo: cnpj-skill --cache clear
+
+    --version               Mostrar versão
+    --help                  Mostrar esta mensagem
+
+  FORMATOS DE SAÍDA:
+    --json                  JSON (padrão)
+    --csv                   CSV
+    --table                 Tabela formatada
+
+  EXEMPLOS:
+
+    # Consulta simples
+    cnpj-skill --cnpj 11222333000181
+
+    # Com validação automática
+    cnpj-skill --validate 11.222.333/0001-81
+
+    # Processar várias empresas
+    cnpj-skill --batch empresas.txt
+
+    # Exportar para Excel
+    cnpj-skill --brasilapi 11222333000181 --export resultado.xlsx
+
+    # Limpar cache
+    cnpj-skill --cache clear
+
+  CONFIGURAÇÕES:
+    Cache:      $CACHE_DIR
+    Logs:       $LOG_DIR
+    Projeto:    $CNPJ_PROJECT
+
+  MAIS INFORMAÇÕES:
+    Visite: https://github.com/diasgthiago92/claude-code/wiki/cnpj-skill
+
+EOF
+}
+
+# ============================================================================
+# Gerenciar Cache
+# ============================================================================
+
+gerenciar_cache() {
+    local acao=$1
+
+    case "$acao" in
+        clear)
+            log_info "Limpando cache..."
+            rm -rf "$CACHE_DIR"/*
+            log_success "Cache limpo"
+            ;;
+        list)
+            log_info "Arquivos em cache:"
+            ls -lh "$CACHE_DIR"/ 2>/dev/null || log_warn "Cache vazio"
+            ;;
+        stats)
+            local total=$(du -sh "$CACHE_DIR" | cut -f1)
+            local files=$(ls -1 "$CACHE_DIR" | wc -l)
+            echo "Total: $total | Arquivos: $files"
+            ;;
+        *)
+            log_error "Ação desconhecida: $acao"
+            echo "Use: clear, list, ou stats"
+            return 1
+            ;;
+    esac
+}
+
+# ============================================================================
+# Main
+# ============================================================================
+
+main() {
+    if [[ $# -eq 0 ]]; then
+        show_help
+        return 0
+    fi
+
+    case "$1" in
+        --help|-h)
+            show_help
+            ;;
+        --version|-v)
+            echo "CNPJ Skill v1.0.0"
+            ;;
+        --cnpj)
+            if [[ -z "$2" ]]; then
+                log_error "CNPJ não fornecido"
+                return 1
+            fi
+            if validate_cnpj "$2"; then
+                consulta_brasilapi "$2"
+            else
+                log_error "CNPJ inválido: $2"
+                return 1
+            fi
+            ;;
+        --validate)
+            if [[ -z "$2" ]]; then
+                log_error "CNPJ não fornecido"
+                return 1
+            fi
+            if validate_cnpj "$2"; then
+                log_success "CNPJ válido"
+            else
+                log_error "CNPJ inválido"
+                return 1
+            fi
+            ;;
+        --brasilapi)
+            if [[ -z "$2" ]]; then
+                log_error "CNPJ não fornecido"
+                return 1
+            fi
+            consulta_brasilapi "$2"
+            ;;
+        --receita)
+            if [[ -z "$2" ]]; then
+                log_error "CNPJ não fornecido"
+                return 1
+            fi
+            log_warn "Opção --receita foi substituída por --full (relatório completo via Python)"
+            gerar_relatorio_completo "$2" "${3:-markdown}"
+            ;;
+        --full)
+            if [[ -z "$2" ]]; then
+                log_error "CNPJ não fornecido"
+                return 1
+            fi
+            validate_cnpj "$2" || { log_error "CNPJ inválido: $2"; return 1; }
+            gerar_relatorio_completo "$2" "${3:-markdown}"
+            ;;
+        --batch)
+            if [[ -z "$2" ]]; then
+                log_error "Arquivo não fornecido"
+                return 1
+            fi
+            processar_batch "$2" "${3:-json}"
+            ;;
+        --cache)
+            if [[ -z "$2" ]]; then
+                log_error "Ação de cache não fornecida"
+                return 1
+            fi
+            gerenciar_cache "$2"
+            ;;
+        --export)
+            if [[ -z "$2" ]] || [[ -z "$3" ]]; then
+                log_error "CNPJ e arquivo de saída necessários"
+                return 1
+            fi
+            exportar_excel "$2" "$3"
+            ;;
+        *)
+            log_error "Opção desconhecida: $1"
+            show_help
+            return 1
+            ;;
+    esac
+}
+
+main "$@"
